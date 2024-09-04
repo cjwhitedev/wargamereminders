@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/wargamereminders/static/css/main.caac209e.css",
-    "main.js": "/wargamereminders/static/js/main.48668220.js",
+    "main.js": "/wargamereminders/static/js/main.fab42a9b.js",
     "static/js/453.7e696307.chunk.js": "/wargamereminders/static/js/453.7e696307.chunk.js",
     "static/media/Warhammer 40,000.gst": "/wargamereminders/static/media/Warhammer 40,000.d1d40e4caeb4417eb07f.gst",
     "index.html": "/wargamereminders/index.html",
     "main.caac209e.css.map": "/wargamereminders/static/css/main.caac209e.css.map",
-    "main.48668220.js.map": "/wargamereminders/static/js/main.48668220.js.map",
+    "main.fab42a9b.js.map": "/wargamereminders/static/js/main.fab42a9b.js.map",
     "453.7e696307.chunk.js.map": "/wargamereminders/static/js/453.7e696307.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.caac209e.css",
-    "static/js/main.48668220.js"
+    "static/js/main.fab42a9b.js"
   ]
 }
