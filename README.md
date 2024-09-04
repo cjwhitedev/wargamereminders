@@ -1,3 +1,3 @@
 # wargamereminders
 
-[cjwhitedev.github.io/wargamereminders]([url](https://cjwhitedev.github.io/wargamereminders/))
+[cjwhitedev.github.io/wargamereminders](https://cjwhitedev.github.io/wargamereminders/)
