@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/wargamereminders/static/css/main.f001fdbc.css",
-    "main.js": "/wargamereminders/static/js/main.2180fb08.js",
+    "main.css": "/wargamereminders/static/css/main.caac209e.css",
+    "main.js": "/wargamereminders/static/js/main.48668220.js",
     "static/js/453.7e696307.chunk.js": "/wargamereminders/static/js/453.7e696307.chunk.js",
-    "static/media/logo.svg": "/wargamereminders/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "static/media/Warhammer 40,000.gst": "/wargamereminders/static/media/Warhammer 40,000.d1d40e4caeb4417eb07f.gst",
     "index.html": "/wargamereminders/index.html",
-    "main.f001fdbc.css.map": "/wargamereminders/static/css/main.f001fdbc.css.map",
-    "main.2180fb08.js.map": "/wargamereminders/static/js/main.2180fb08.js.map",
+    "main.caac209e.css.map": "/wargamereminders/static/css/main.caac209e.css.map",
+    "main.48668220.js.map": "/wargamereminders/static/js/main.48668220.js.map",
     "453.7e696307.chunk.js.map": "/wargamereminders/static/js/453.7e696307.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f001fdbc.css",
-    "static/js/main.2180fb08.js"
+    "static/css/main.caac209e.css",
+    "static/js/main.48668220.js"
   ]
 }
