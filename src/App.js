@@ -6,6 +6,7 @@ import XMLData from "./data/wh40k-10e/Warhammer 40,000.gst";
 function App() {
   const [name, setName] = useState("Wargame");
   const [sharedRules, setSharedRules] = useState([]);
+  const [sharedProfiles, setSharedProfiles] = useState([]);
 
   useEffect(() => {
     axios
@@ -28,6 +29,18 @@ function App() {
               setSharedRules((sharedRules) => [...sharedRules, rule]);
             }
           });
+
+        setSharedProfiles([]);
+        xmlDoc
+          .getElementsByTagName("sharedProfiles")[0]
+          .childNodes.forEach((profile) => {
+            if (profile.nodeName === "profile") {
+              setSharedProfiles((sharedProfiles) => [
+                ...sharedProfiles,
+                profile,
+              ]);
+            }
+          });
       });
   }, []);
 
@@ -42,6 +55,15 @@ function App() {
           <li className="mb-2" key={index}>
             <span className="font-bold">{rule.getAttribute("name")}:</span>{" "}
             {rule.firstElementChild.innerHTML}
+          </li>
+        ))}
+      </ul>
+      <hr className="mb-2" />
+      <ul className="list-none">
+        {sharedProfiles.map((profile, index) => (
+          <li className="mb-2" key={index}>
+            <span className="font-bold">{profile.getAttribute("name")}:</span>{" "}
+            {profile.firstElementChild.innerHTML}
           </li>
         ))}
       </ul>
