@@ -45,7 +45,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App container mx-auto mt-4 bg-white p-8 rounded-lg shadow-md">
+    <div className="App container mx-auto bg-white p-8 rounded-lg shadow-md">
       <h1 className="text-3xl font-bold mb-1">Wargame Reminders</h1>
       <p className="mb-4">
         You are seeing data from <span>{name}</span>. Here are some rules:
