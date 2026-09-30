@@ -1,78 +1,50 @@
-# wargamereminders
+# Wargame Reminders
 
-[cjwhitedev.github.io/wargamereminders](https://cjwhitedev.github.io/wargamereminders/)
+An early-stage project to make tabletop rules easier to use during a game. The long-term goal is to support both Warhammer 40,000 and Age of Sigmar with an army-focused reminders experience inspired by [AoS Reminders](https://aosreminders.com/).
 
-Deploy with `npm run deploy`
+**Live prototype:** https://cjwhitedev.github.io/wargamereminders/
 
----
+> [!IMPORTANT]
+> **This is an AI-assisted side project.**
+>
+> GitHub Copilot has helped write and maintain project code, scripts, and documentation. The project owner, a front-end developer with more than 10 years of experience, directs the work, chooses features, and reviews changes. AI-generated code and data transformations can be wrong; verify rules and app behavior before relying on them.
+>
+> A note from Copilot: this is currently a small prototype, not a finished reminders product. I can misunderstand rules, export formats, or project requirements. Check source material and report anything that looks incorrect.
 
-#npm install -D tailwindcss Getting Started with Create React App
+This is an unofficial fan project. It is not affiliated with, endorsed by, or sanctioned by Games Workshop, Wahapedia, or the AoS Reminders project or its author. Warhammer names, rules, and related content belong to their respective rights holders. Consult official publications for authoritative rules.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project status
 
-## Available Scripts
+The current app is a Create React App prototype. It reads `src/data/wh40k-10e/Warhammer 40,000.gst` and displays shared rules and profiles. Other BattleScribe catalogues in that directory are not yet connected to the interface.
 
-In the project directory, you can run:
+The current data workflow can download Wahapedia CSV exports for 40K and AoS. The next step is to inspect their schemas and convert selected data into a project-owned JSON model. The export data is not yet used by the interface, and the planned Next.js migration is not implemented yet.
 
-### `npm start`
+## Data sources
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Wahapedia 40K 10th Edition data exports](https://wahapedia.ru/wh40k10ed/the-rules/data-export/)
+- [Wahapedia 40K export data specifications](https://wahapedia.ru/wh40k10ed/Export%20Data%20Specs.xlsx)
+- [Wahapedia AoS 4 data exports](https://wahapedia.ru/aos4/the-rules/data-export/)
+- [AoS Reminders](https://aosreminders.com/), the independent project that inspired this project's reminders workflow
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Wahapedia files are source snapshots, not the app's permanent data model. The fetch command preserves downloaded files unchanged under the Git-ignored `src/data/wahapedia/` directory; parsing and JSON generation will be developed separately.
 
-### `npm test`
+## Local development
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```sh
+npm install
+npm start
+```
 
-### `npm run build`
+Open http://localhost:3000.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Command | Purpose |
+| --- | --- |
+| `npm start` | Starts the development server |
+| `npm test -- --watchAll=false` | Runs the current test suite once |
+| `npm run build` | Builds the app into `build/` |
+| `npm run deploy` | Builds and publishes `build/` to GitHub Pages |
+| `npm run data:fetch -- --game 40k` | Fetches the 40K exports |
+| `npm run data:fetch -- --game aos` | Fetches the AoS exports |
+| `npm run data:fetch -- --game all` | Fetches both export sets |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, data refresh, and verification steps.
