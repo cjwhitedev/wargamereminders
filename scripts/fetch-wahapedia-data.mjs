@@ -31,6 +31,10 @@ function fileNameFromUrl(value) {
   return name;
 }
 
+function extensionFromUrl(value) {
+  return path.posix.extname(new URL(value).pathname).toLowerCase();
+}
+
 function isWahapediaUrl(url) {
   return ["wahapedia.ru", "www.wahapedia.ru"].includes(url.hostname.toLowerCase());
 }
@@ -144,7 +148,12 @@ async function fetchData() {
   console.log(`[40k] Reading export specification ${specificationUrl}`);
   const specification = await fetchBuffer(specificationUrl);
   const urls = sortExports(discoverWorkbookCsvLinks(specification, specificationUrl));
-  if (!urls.length) throw new Error(`No Wahapedia CSV links found in ${specificationUrl}`);
+  if (!urls.length) {
+    throw new Error(
+      `No Wahapedia CSV links found in the specification workbook ${specificationUrl}. ` +
+      "The XLSX is the link directory, not a CSV export; its linked export list may have changed."
+    );
+  }
 
   const lastUpdateUrl = urls.find(
     (url) => fileNameFromUrl(url).toLowerCase() === "last_update.csv"
