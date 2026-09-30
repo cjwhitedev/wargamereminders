@@ -10,21 +10,11 @@ import * as XLSX from "xlsx";
 const outputRoot = path.join(process.cwd(), "src", "data", "wahapedia");
 const downloadDelayMs = 200;
 const requestTimeoutMs = 30_000;
-const games = {
-  "40k": {
-    directory: "wh40k10ed",
-    exportPageUrl: "https://wahapedia.ru/wh40k10ed/the-rules/data-export/",
-    specificationUrl: "https://wahapedia.ru/wh40k10ed/Export%20Data%20Specs.xlsx",
-  },
-  aos: {
-    directory: "aos4",
-    exportPageUrl: "https://wahapedia.ru/aos4/the-rules/data-export/",
-  },
-};
+const edition = "wh40k10ed";
+const specificationUrl = "https://wahapedia.ru/wh40k10ed/Export%20Data%20Specs.xlsx";
 
 const { values } = parseArgs({
   options: {
-    game: { type: "string", default: "all" },
     help: { type: "boolean", short: "h", default: false },
   },
 });
@@ -41,31 +31,8 @@ function fileNameFromUrl(value) {
   return name;
 }
 
-function extensionFromUrl(value) {
-  return path.posix.extname(new URL(value).pathname).toLowerCase();
-}
-
 function isWahapediaUrl(url) {
   return ["wahapedia.ru", "www.wahapedia.ru"].includes(url.hostname.toLowerCase());
-}
-
-function discoverPageLinks(html, pageUrl) {
-  const links = new Set();
-  const hrefPattern = /\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
-
-  for (const match of html.matchAll(hrefPattern)) {
-    const href = (match[1] ?? match[2] ?? match[3] ?? "").replaceAll("&amp;", "&");
-    try {
-      const url = new URL(href, pageUrl);
-      if (isWahapediaUrl(url) && [".csv", ".xlsx"].includes(extensionFromUrl(url))) {
-        links.add(url.href);
-      }
-    } catch {
-      continue;
-    }
-  }
-
-  return [...links];
 }
 
 async function fetchBuffer(url) {
@@ -173,23 +140,10 @@ async function replaceDirectory(staging, destination) {
   if (hasBackup) await rm(backup, { recursive: true, force: true });
 }
 
-async function fetchGame(gameKey) {
-  const game = games[gameKey];
-  console.log(`[${gameKey}] Reading ${game.exportPageUrl}`);
-  const pageHtml = (await fetchBuffer(game.exportPageUrl)).toString("utf8");
-  const pageLinks = discoverPageLinks(pageHtml, game.exportPageUrl);
-  const specificationUrl =
-    game.specificationUrl ?? pageLinks.find((url) => extensionFromUrl(url) === ".xlsx");
-  if (!specificationUrl) {
-    throw new Error(`No export-specification workbook link found on ${game.exportPageUrl}`);
-  }
-
-  console.log(`[${gameKey}] Reading export specification`);
+async function fetchData() {
+  console.log(`[40k] Reading export specification ${specificationUrl}`);
   const specification = await fetchBuffer(specificationUrl);
-  const urls = sortExports([
-    ...pageLinks.filter((url) => extensionFromUrl(url) === ".csv"),
-    ...discoverWorkbookCsvLinks(specification, specificationUrl),
-  ]);
+  const urls = sortExports(discoverWorkbookCsvLinks(specification, specificationUrl));
   if (!urls.length) throw new Error(`No Wahapedia CSV links found in ${specificationUrl}`);
 
   const lastUpdateUrl = urls.find(
@@ -201,10 +155,10 @@ async function fetchGame(gameKey) {
     .replace(/^\uFEFF/, "")
     .trim() ?? null;
   const specificationSha256 = sha256(specification);
-  const outputDirectory = path.join(outputRoot, game.directory);
+  const outputDirectory = path.join(outputRoot, edition);
 
   if (await isCurrent(outputDirectory, specificationSha256, lastUpdate, urls)) {
-    console.log(`[${gameKey}] Already current (${lastUpdate}); no exports downloaded.`);
+    console.log(`[40k] Already current (${lastUpdate}); no exports downloaded.`);
     return;
   }
 
@@ -218,14 +172,13 @@ async function fetchGame(gameKey) {
       const name = fileNameFromUrl(url);
       await writeFile(path.join(staging, name), buffer);
       files.push({ name, url, bytes: buffer.byteLength, sha256: sha256(buffer) });
-      console.log(`[${gameKey}] ${index + 1}/${urls.length} ${name}`);
+      console.log(`[40k] ${index + 1}/${urls.length} ${name}`);
     }
 
     const manifest = {
       schemaVersion: 1,
-      game: gameKey,
-      edition: game.directory,
-      exportPageUrl: game.exportPageUrl,
+      game: "40k",
+      edition,
       specificationUrl,
       specificationSha256,
       lastUpdate,
@@ -234,7 +187,7 @@ async function fetchGame(gameKey) {
     };
     await writeFile(path.join(staging, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
     await replaceDirectory(staging, outputDirectory);
-    console.log(`[${gameKey}] Saved ${files.length} exports to ${outputDirectory}`);
+    console.log(`[40k] Saved ${files.length} exports to ${outputDirectory}`);
   } catch (error) {
     await rm(staging, { recursive: true, force: true });
     throw error;
@@ -242,23 +195,19 @@ async function fetchGame(gameKey) {
 }
 
 function printHelp() {
-  console.log(`Usage: npm run data:fetch -- [options]
+  console.log(`Usage: npm run data:fetch [-- --help]
 
 Options:
-  --game <40k|aos|all>  Which ruleset to fetch (default: all)
-  --help, -h            Show this help`);
+  --help, -h  Show this help
+
+Fetches the current Warhammer 40,000 10th Edition CSV exports listed in:
+${specificationUrl}`);
 }
 
 async function main() {
   if (values.help) return printHelp();
-  const gameKeys = values.game === "all" ? Object.keys(games) : [values.game];
-  for (const gameKey of gameKeys) {
-    if (!Object.hasOwn(games, gameKey)) {
-      throw new Error(`Unknown game "${gameKey}". Choose 40k, aos, or all.`);
-    }
-  }
   await mkdir(outputRoot, { recursive: true });
-  for (const gameKey of gameKeys) await fetchGame(gameKey);
+  await fetchData();
 }
 
 main().catch((error) => {
