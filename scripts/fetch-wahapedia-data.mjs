@@ -61,17 +61,16 @@ function discoverWorkbookCsvLinks(buffer, workbookUrl) {
   for (const sheetName of workbook.SheetNames) {
     for (const [address, cell] of Object.entries(workbook.Sheets[sheetName])) {
       if (address.startsWith("!")) continue;
+      const target = cell?.l?.Target;
+      if (typeof target !== "string") continue;
 
-      for (const candidate of [cell?.l?.Target, cell?.v]) {
-        if (typeof candidate !== "string") continue;
-        try {
-          const url = new URL(candidate, workbookUrl);
-          if (isWahapediaUrl(url) && extensionFromUrl(url) === ".csv") {
-            links.add(url.href);
-          }
-        } catch {
-          continue;
+      try {
+        const url = new URL(target, workbookUrl);
+        if (isWahapediaUrl(url) && extensionFromUrl(url) === ".csv") {
+          links.add(url.href);
         }
+      } catch {
+        continue;
       }
     }
   }
